@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Call Bamber — Admin Panel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#0f1117;color:#e6e8ee;min-height:100vh}
+.hide{display:none!important}
+.login{max-width:380px;margin:12vh auto;padding:28px;background:#171a23;border-radius:16px;border:1px solid #262b38}
+.login h1{font-size:22px;margin-bottom:6px}
+.login p{color:#8b93a7;font-size:13px;margin-bottom:20px}
+input,select,textarea{width:100%;padding:11px 13px;background:#0f1117;border:1px solid #2b3142;border-radius:10px;color:#e6e8ee;font-size:14px;font-family:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#4f7cff}
+button{cursor:pointer;font-family:inherit;font-size:14px;border:none;border-radius:10px;padding:11px 18px;background:#4f7cff;color:#fff;font-weight:600}
+button:hover{opacity:.9}
+button.ghost{background:#232838;color:#c3c9d8}
+button.danger{background:#e5484d}
+button.small{padding:6px 11px;font-size:12px;border-radius:8px}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#171a23;border-bottom:1px solid #262b38;position:sticky;top:0;z-index:10}
+header h1{font-size:18px}
+header .sub{font-size:12px;color:#8b93a7}
+.card{background:#171a23;border:1px solid #262b38;border-radius:14px;padding:20px;margin-bottom:18px}
+.card h2{font-size:15px;margin-bottom:14px;color:#aab3c8;text-transform:uppercase;letter-spacing:.5px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.row>div{flex:1;min-width:150px}
+label{display:block;font-size:12px;color:#8b93a7;margin-bottom:6px}
+.switch{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #212633}
+.switch:last-child{border-bottom:none}
+.switch span{font-size:14px}
+.toggle{width:48px;height:27px;background:#2b3142;border-radius:20px;position:relative;cursor:pointer;transition:.2s;flex-shrink:0}
+.toggle.on{background:#2f9e44}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:21px;height:21px;background:#fff;border-radius:50%;transition:.2s}
+.toggle.on::after{left:24px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 8px;color:#8b93a7;font-size:11px;text-transform:uppercase;border-bottom:1px solid #262b38}
+td{padding:11px 8px;border-bottom:1px solid #1d222e;vertical-align:middle}
+code{font-family:ui-monospace,monospace;background:#0f1117;padding:3px 7px;border-radius:6px;font-size:12px;color:#7ee787}
+.badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.b-green{background:#12351f;color:#4ade80}
+.b-red{background:#3a1518;color:#f87171}
+.b-gray{background:#232838;color:#9aa3b8}
+.msg{padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px}
+.msg.ok{background:#12351f;color:#4ade80}
+.msg.err{background:#3a1518;color:#f87171}
+@media(max-width:600px){.wrap{padding:12px}.card{padding:15px}table{font-size:12px}th,td{padding:8px 5px}}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="login">
+  <h1>Call Bamber</h1>
+  <p>Admin panel — login karein</p>
+  <div id="loginMsg"></div>
+  <input type="password" id="pw" placeholder="Admin password" style="margin-bottom:12px">
+  <button onclick="login()" style="width:100%">Login</button>
+</div>
+
+<div id="panelView" class="hide">
+  <header>
+    <div>
+      <h1>Call Bamber</h1>
+      <div class="sub">Admin Panel</div>
+    </div>
+    <button class="ghost small" onclick="logout()">Logout</button>
+  </header>
+
+  <div class="wrap">
+    <div id="msg"></div>
+
+    <!-- UPDATE SETTINGS -->
+    <div class="card">
+      <h2>Update Settings</h2>
+      <div class="switch">
+        <span>Force Update (purana version pe app band)</span>
+        <div class="toggle" id="t-forceUpdate" onclick="tog('forceUpdate')"></div>
+      </div>
+      <div class="switch">
+        <span>Optional Update (naya version available)</span>
+        <div class="toggle" id="t-optionalUpdate" onclick="tog('optionalUpdate')"></div>
+      </div>
+      <div class="switch">
+        <span>"Baad Me" button dikhana</span>
+        <div class="toggle" id="t-showLaterButton" onclick="tog('showLaterButton')"></div>
+      </div>
+      <div class="switch">
+        <span>Maintenance Mode (poora app band)</span>
+        <div class="toggle" id="t-maintenance" onclick="tog('maintenance')"></div>
+      </div>
+
+      <div class="row" style="margin-top:16px">
+        <div><label>Latest Version Code</label><input type="number" id="latestVersionCode"></div>
+        <div><label>Latest Version Name</label><input type="text" id="latestVersionName"></div>
+        <div><label>Min Version Code (isse neeche force)</label><input type="number" id="minVersionCode"></div>
+      </div>
+      <div class="row">
+        <div><label>Update Title</label><input type="text" id="updateTitle"></div>
+        <div><label>Update Button Text</label><input type="text" id="updateButtonText"></div>
+        <div><label>Later Button Text</label><input type="text" id="laterButtonText"></div>
+      </div>
+      <div class="row">
+        <div style="flex:2"><label>Update Message</label><input type="text" id="updateMessage"></div>
+      </div>
+      <div class="row">
+        <div style="flex:2"><label>Update URL (Play Store / APK link)</label><input type="text" id="updateUrl"></div>
+        <div style="flex:2"><label>Maintenance Message</label><input type="text" id="maintenanceMsg"></div>
+      </div>
+      <button onclick="saveConfig()">Save Settings</button>
+    </div>
+
+    <!-- LICENSE KEYS -->
+    <div class="card">
+      <h2>License Keys</h2>
+      <div class="row">
+        <div><label>Kitni keys banao</label><input type="number" id="genCount" value="1" min="1" max="100"></div>
+        <div><label>Valid days (khaali = lifetime)</label><input type="number" id="genDays" placeholder="lifetime"></div>
+        <div><label>Plan</label><input type="text" id="genPlan" value="standard"></div>
+        <div><label>Note</label><input type="text" id="genNote" placeholder="jaise: Rahul ko diya"></div>
+      </div>
+      <button onclick="genKeys()">Generate Keys</button>
+      <div id="newKeys" style="margin-top:14px"></div>
+
+      <div style="overflow-x:auto;margin-top:18px">
+        <table>
+          <thead><tr>
+            <th>Key</th><th>Plan</th><th>Status</th><th>Device</th><th>Expiry</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="keysBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="card">
+      <h2>Activity Log</h2>
+      <div id="logsBody" style="font-size:13px;color:#9aa3b8"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let TOKEN = localStorage.getItem('cb_token') || '';
+let CONFIG = {};
+
+function el(id){return document.getElementById(id)}
+function showMsg(text, ok){
+  const m = el('msg');
+  m.innerHTML = `<div class="msg ${ok?'ok':'err'}">${text}</div>`;
+  setTimeout(()=>{ m.innerHTML=''; }, 4000);
+}
+
+async function api(path, opts={}){
+  opts.headers = Object.assign({'Content-Type':'application/json'}, opts.headers||{});
+  if (TOKEN) opts.headers['Authorization'] = 'Bearer ' + TOKEN;
+  const r = await fetch(path, opts);
+  const j = await r.json().catch(()=>({}));
+  if (r.status === 401 && path !== '/api/admin/login') { logout(); throw new Error('Login dobara karein'); }
+  return j;
+}
+
+async function login(){
+  const pw = el('pw').value;
+  if(!pw) return;
+  const j = await api('/api/admin/login', {method:'POST', body: JSON.stringify({password: pw})});
+  if (j.ok){
+    TOKEN = j.token;
+    localStorage.setItem('cb_token', TOKEN);
+    el('loginView').classList.add('hide');
+    el('panelView').classList.remove('hide');
+    await loadAll();
+  } else {
+    el('loginMsg').innerHTML = `<div class="msg err">${j.error||'Login fail'}</div>`;
+  }
+}
+
+function logout(){
+  TOKEN=''; localStorage.removeItem('cb_token');
+  el('panelView').classList.add('hide');
+  el('loginView').classList.remove('hide');
+  el('pw').value='';
+}
+
+async function loadAll(){
+  const c = await api('/api/admin/config');
+  if (c.ok){ CONFIG = c.config; renderConfig(); }
+  await loadKeys();
+  await loadLogs();
+}
+
+function renderConfig(){
+  const fields = ['latestVersionCode','latestVersionName','minVersionCode','updateTitle','updateButtonText','laterButtonText','updateMessage','updateUrl','maintenanceMsg'];
+  fields.forEach(f => { if (el(f)) el(f).value = CONFIG[f] ?? ''; });
+  ['forceUpdate','optionalUpdate','showLaterButton','maintenance'].forEach(f=>{
+    const t = el('t-'+f);
+    if (t) t.classList.toggle('on', !!CONFIG[f]);
+  });
+}
+
+function tog(key){
+  CONFIG[key] = !CONFIG[key];
+  el('t-'+key).classList.toggle('on', !!CONFIG[key]);
+}
+
+async function saveConfig(){
+  const fields = ['latestVersionCode','latestVersionName','minVersionCode','updateTitle','updateButtonText','laterButtonText','updateMessage','updateUrl','maintenanceMsg'];
+  const body = {};
+  fields.forEach(f => { if (el(f)) body[f] = el(f).type === 'number' ? Number(el(f).value) : el(f).value; });
+  ['forceUpdate','optionalUpdate','showLaterButton','maintenance'].forEach(f => body[f] = !!CONFIG[f]);
+  const j = await api('/api/admin/config', {method:'POST', body: JSON.stringify(body)});
+  if (j.ok){ CONFIG = j.config; showMsg('Settings save ho gayi', true); }
+  else showMsg(j.error||'Save fail', false);
+}
+
+async function genKeys(){
+  const body = {
+    count: Number(el('genCount').value)||1,
+    days: el('genDays').value ? Number(el('genDays').value) : null,
+    plan: el('genPlan').value || 'standard',
+    note: el('genNote').value || ''
+  };
+  const j = await api('/api/admin/keys', {method:'POST', body: JSON.stringify(body)});
+  if (j.ok){
+    el('newKeys').innerHTML = '<div class="msg ok">Nayi keys:<br>' + j.keys.map(k=>`<code>${k.key}</code>`).join(' ') + '</div>';
+    await loadKeys();
+  } else showMsg(j.error||'Fail', false);
+}
+
+async function loadKeys(){
+  const j = await api('/api/admin/keys');
+  if (!j.ok) return;
+  const b = el('keysBody');
+  if (!j.keys.length){ b.innerHTML = '<tr><td colspan="6" style="color:#8b93a7">Abhi koi key nahi hai</td></tr>'; return; }
+  b.innerHTML = j.keys.slice().reverse().map(k => {
+    const expired = k.expiresAt && Date.now() > k.expiresAt;
+    const status = k.blocked ? '<span class="badge b-red">Blocked</span>' : expired ? '<span class="badge b-red">Expired</span>' : '<span class="badge b-green">Active</span>';
+    const dev = k.deviceId ? `<span class="badge b-gray">${k.deviceName||'device'}</span>` : '<span style="color:#8b93a7">—</span>';
+    const exp = k.expiresAt ? new Date(k.expiresAt).toLocaleDateString('en-IN') : 'Lifetime';
+    return `<tr>
+      <td><code>${k.key}</code></td>
+      <td>${k.plan||'standard'}</td>
+      <td>${status}</td>
+      <td>${dev}</td>
+      <td>${exp}</td>
+      <td style="white-space:nowrap">
+        <button class="small ghost" onclick="toggleBlock('${k.key}', ${!k.blocked})">${k.blocked?'Unblock':'Block'}</button>
+        <button class="small ghost" onclick="resetDevice('${k.key}')">Reset</button>
+        <button class="small danger" onclick="delKey('${k.key}')">Del</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function toggleBlock(key, blocked){
+  await api(`/api/admin/keys/${key}/block`, {method:'POST', body: JSON.stringify({blocked})});
+  await loadKeys(); await loadLogs();
+}
+async function resetDevice(key){
+  await api(`/api/admin/keys/${key}/reset-device`, {method:'POST'});
+  await loadKeys(); await loadLogs();
+}
+async function delKey(key){
+  if(!confirm('Key delete karni hai? '+key)) return;
+  await api(`/api/admin/keys/${key}`, {method:'DELETE'});
+  await loadKeys(); await loadLogs();
+}
+
+async function loadLogs(){
+  const j = await api('/api/admin/logs');
+  if (!j.ok) return;
+  el('logsBody').innerHTML = j.logs.length
+    ? j.logs.slice(0,50).map(l=>`<div style="padding:6px 0;border-bottom:1px solid #1d222e">${new Date(l.t).toLocaleString('en-IN')} — <b style="color:#c3c9d8">${l.type}</b> — ${l.detail}</div>`).join('')
+    : 'Koi activity nahi';
+}
+
+el('pw').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+if (TOKEN){
+  el('loginView').classList.add('hide');
+  el('panelView').classList.remove('hide');
+  loadAll();
+}
+</script>
+</body>
+</html>
