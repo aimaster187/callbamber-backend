@@ -1,0 +1,22 @@
+{
+  "type": "web_service",
+  "name": "callbamber-backend",
+  "ownerId": "tea-db6sn8ij9qps73adhaqg",
+  "repo": "https://github.com/aimaster187/callbamber-backend",
+  "branch": "main",
+  "autoDeploy": "yes",
+  "envVars": [
+    {"key": "ADMIN_PASSWORD", "value": "pranav@admin123"},
+    {"key": "JWT_SECRET", "generateValue": true},
+    {"key": "DATA_DIR", "value": "/data"}
+  ],
+  "serviceDetails": {
+    "env": "node",
+    "plan": "free",
+    "region": "oregon",
+    "envSpecificDetails": {
+      "buildCommand": "npm install",
+      "startCommand": "node server.js"
+    }
+  }
+}
