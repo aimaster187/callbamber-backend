@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: callbamber-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ADMIN_PASSWORD
+        generateValue: false
+        value: pranav@admin123
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATA_DIR
+        value: /data
+    disk:
+      name: callbamber-data
+      mountPath: /data
+      sizeGB: 1
