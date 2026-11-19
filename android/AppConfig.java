@@ -6,7 +6,7 @@ package com.callbamber.license;
  */
 public class AppConfig {
     // Render pe deploy hone ke baad apna URL yahan daalo
-    public static final String BASE_URL = "https://callbamber.onrender.com";
+    public static final String BASE_URL = "https://callbamber-backend.onrender.com";
 
     // SharedPreferences ka naam
     public static final String PREFS = "callbamber_prefs";
